@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM ghcr.io/linuxserver/baseimage-selkies:alpine324
+FROM ghcr.io/linuxserver/baseimage-selkies:debianbookworm
 
 # set version label
 ARG BUILD_DATE
@@ -10,7 +10,7 @@ LABEL build_version="Linuxserver.io version:- ${VERSION} Build-date:- ${BUILD_DA
 LABEL maintainer="thelamer"
 
 # title
-ENV TITLE="Alpine XFCE"
+ENV TITLE="Debian XFCE"
 
 RUN \
   echo "**** add icon ****" && \
@@ -18,14 +18,17 @@ RUN \
     /usr/share/selkies/www/icon.png \
     https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/webtop-logo.png && \
   echo "**** install packages ****" && \
-  apk add --no-cache \
-    adw-gtk3 \
-    adwaita-xfce-icon-theme \
+  apt-get update && \
+  DEBIAN_FRONTEND=noninteractive \
+  apt-get install --no-install-recommends -y \
+    adwaita-icon-theme \
     chromium \
+    chromium-l10n \
+    elementary-xfce-icon-theme \
     mousepad \
     ristretto \
     thunar \
-    util-linux-misc \
+    util-linux \
     xfce4 \
     xfce4-terminal && \
   echo "**** xfce-tweaks ****" && \
@@ -37,8 +40,11 @@ RUN \
     /etc/xdg/autostart/xfce4-power-manager.desktop \
     /etc/xdg/autostart/xscreensaver.desktop \
     /usr/share/xfce4/panel/plugins/power-manager-plugin.desktop && \
+  apt-get autoclean && \
   rm -rf \
     /config/.cache \
+    /var/lib/apt/lists/* \
+    /var/tmp/* \
     /tmp/*
 
 # add local files
