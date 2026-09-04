@@ -1,15 +1,11 @@
 # syntax=docker/dockerfile:1
 
-FROM ghcr.io/linuxserver/baseimage-selkies:debianbookworm
+FROM ghcr.io/linuxserver/baseimage-selkies:debiantrixie
 
-# set version label
 ARG BUILD_DATE
 ARG VERSION
-ARG XFCE_VERSION
 LABEL build_version="Linuxserver.io version:- ${VERSION} Build-date:- ${BUILD_DATE}"
-LABEL maintainer="thelamer"
 
-# title
 ENV TITLE="Debian XFCE"
 
 RUN \
@@ -21,20 +17,12 @@ RUN \
   apt-get update && \
   DEBIAN_FRONTEND=noninteractive \
   apt-get install --no-install-recommends -y \
-    adwaita-icon-theme \
     chromium \
-    chromium-l10n \
-    elementary-xfce-icon-theme \
     mousepad \
     ristretto \
     thunar \
-    util-linux \
     xfce4 \
     xfce4-terminal && \
-  echo "**** xfce-tweaks ****" && \
-  mv \
-    /usr/bin/thunar \
-    /usr/bin/thunar-real && \
   echo "**** cleanup ****" && \
   rm -f \
     /etc/xdg/autostart/xfce4-power-manager.desktop \
@@ -47,10 +35,4 @@ RUN \
     /var/tmp/* \
     /tmp/*
 
-# add local files
-COPY /root /
-
-# ports and volumes
 EXPOSE 3001
-
-VOLUME /config
